@@ -1,0 +1,69 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+}
+.container {
+  width: 90%;
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  background: #fff;
+  margin-top: 40px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+h1, h2 { text-align: center; }
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+button {
+  padding: 10px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  margin-top: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+button:hover {
+  opacity: 0.9;
+}
+.password-container {
+  position: relative;
+}
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 12px;
+  cursor: pointer;
+}
+ul {
+  list-style: none;
+  padding: 0;
+}
+ul li {
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+}
+ul li button {
+  padding: 5px 10px;
+  margin-left: 10px;
+}
+ul li button.delete {
+  background: #dc3545;
+}
+ul li button.rename {
+  background: #007bff;
+}
+#progress-container {
+  text-align: center;
+}
+#upload-progress {
+  width: 100%;
+  height: 20px;
+}

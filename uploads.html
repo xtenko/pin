@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LunaProjectX - Uploads</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Upload File</h1>
+    <p>Selamat datang, <span id="user-nickname"></span>!</p>
+    <button onclick="logout()">Keluar</button>
+
+    <h2>Pilih File</h2>
+    <input type="file" id="file-input">
+    <button onclick="startUpload()">Unggah</button>
+
+    <!-- Progress Bar -->
+    <div id="progress-container" style="display:none; margin-top:10px;">
+      <progress id="upload-progress" value="0" max="100"></progress>
+      <span id="progress-text">0%</span><br>
+      <button id="pause-btn" onclick="pauseUpload()">⏸ Jeda</button>
+      <button id="resume-btn" onclick="resumeUpload()" style="display:none;">▶ Lanjut</button>
+      <button id="cancel-btn" onclick="cancelUpload()">❌ Batal</button>
+    </div>
+
+    <h2>Daftar File</h2>
+    <ul id="file-list"></ul>
+
+    <p><a href="dashboard.html">⬅ Kembali ke Dashboard</a></p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
+  <script>
+    document.getElementById("user-nickname").textContent = localStorage.getItem("nickname");
+  </script>
+</body>
+</html>

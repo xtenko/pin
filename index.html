@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LunaProjectX - Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>PRIVATE_FILES</h1>
+
+    <div id="form-container">
+      <!-- Login Form -->
+      <div id="login-form">
+        <h2>Login cuy</h2>
+        <input type="text" id="login-nickname" placeholder="Nickname" required>
+        <div class="password-container">
+          <input type="password" id="login-password" placeholder="Password" required>
+          <span class="toggle-password" onclick="togglePassword('login-password')">👁</span>
+        </div>
+        <button onclick="login()">Login</button>
+        <p><a href="#" onclick="showForgotPassword()">Lupa password? resetlah</a></p>
+        <p>Belum punya akun? <a href="#" onclick="showRegister()">Daftarlah</a></p>
+      </div>
+
+      <!-- Register Form -->
+      <div id="register-form" style="display:none;">
+        <h2>Daftar</h2>
+        <input type="text" id="register-nickname" placeholder="Nickname" required>
+        <div class="password-container">
+          <input type="password" id="register-password" placeholder="Password" required>
+          <span class="toggle-password" onclick="togglePassword('register-password')">👁</span>
+        </div>
+        <button onclick="register()">Daftar</button>
+        <p>Sudah punya akun? <a href="#" onclick="showLogin()">Login</a></p>
+      </div>
+
+      <!-- Forgot Password Form -->
+      <div id="forgot-form" style="display:none;">
+        <h2>Lupa Password</h2>
+        <input type="text" id="forgot-nickname" placeholder="Masukkan nickname" required>
+        <button onclick="resetPassword()">Reset Password</button>
+        <p><a href="#" onclick="showLogin()">Kembali ke Login</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
+</body>
+</html>

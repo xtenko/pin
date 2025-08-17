@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LunaProjectX - Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Dashboard</h1>
+    <p>Selamat datang, <span id="user-nickname"></span>!</p>
+    <button onclick="logout()">Keluar</button>
+
+    <h2>Menu</h2>
+    <ul>
+      <li><a href="uploads.html">📂 Kelola File</a></li>
+      <li><a href="index.html">🔑 Ganti Akun</a></li>
+    </ul>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
+  <script>
+    document.getElementById("user-nickname").textContent = localStorage.getItem("nickname");
+  </script>
+</body>
+</html>
