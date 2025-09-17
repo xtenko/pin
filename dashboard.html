@@ -16,23 +16,55 @@
   <input type="file" id="file-input">
   <button onclick="uploadFile()">Upload</button>
 
-  <!-- Polyglot Maker Section -->
+  <!-- Polyglot Maker Video -->
   <h2>Polyglot Maker (PNG + MP4)</h2>
   <div>
     <label>Cover PNG (≤ 100 MB):</label><br>
-    <input type="file" id="pngFile" accept="image/png"><br><br>
+    <input type="file" id="pngVideo" accept="image/png"><br><br>
     <label>Video MP4 (≤ 100 MB):</label><br>
     <input type="file" id="mp4File" accept="video/mp4"><br><br>
-    <button onclick="makePolyglot()">Buat Polyglot</button>
-    <a id="downloadLink" style="display:none;" download="polyglot.png">Download Hasil</a>
-    <div id="progressBox" style="display:none; margin-top:10px;">
-      <div class="progress"><div class="bar" id="progressBar"></div></div>
-      <p id="progressText">Progress: 0%</p>
+    <button onclick="makePolyglot('pngVideo','mp4File','video')">Buat Polyglot</button>
+    <a id="downloadVideo" style="display:none;" download="polyglot.png">Download Hasil</a>
+    <div id="progressBoxVideo" style="display:none; margin-top:10px;">
+      <div class="progress"><div class="bar" id="progressBarVideo"></div></div>
+      <p id="progressTextVideo">Progress: 0%</p>
     </div>
-    <div id="message" style="display:none;"></div>
+    <div id="messageVideo" style="display:none;"></div>
+    <button id="backToTopVideo" onclick="scrollToTop()">⬆ Kembali ke Atas</button>
+  </div>
 
-    <!-- Tombol kembali ke atas -->
-    <button id="backToTopBtn" onclick="scrollToTop()">⬆ Kembali ke Atas</button>
+  <!-- Polyglot Maker Dokumen -->
+  <h2>Polyglot Maker (PNG + Dokumen)</h2>
+  <div>
+    <label>Cover PNG (≤ 100 MB):</label><br>
+    <input type="file" id="pngDoc" accept="image/png"><br><br>
+    <label>File Dokumen (≤ 100 MB):</label><br>
+    <input type="file" id="docFile" accept="*/*"><br><br>
+    <button onclick="makePolyglot('pngDoc','docFile','doc')">Buat Polyglot</button>
+    <a id="downloadDoc" style="display:none;" download="polyglot.png">Download Hasil</a>
+    <div id="progressBoxDoc" style="display:none; margin-top:10px;">
+      <div class="progress"><div class="bar" id="progressBarDoc"></div></div>
+      <p id="progressTextDoc">Progress: 0%</p>
+    </div>
+    <div id="messageDoc" style="display:none;"></div>
+    <button id="backToTopDoc" onclick="scrollToTop()">⬆ Kembali ke Atas</button>
+  </div>
+
+  <!-- Polyglot Maker Audio -->
+  <h2>Polyglot Maker (PNG + Audio)</h2>
+  <div>
+    <label>Cover PNG (≤ 100 MB):</label><br>
+    <input type="file" id="pngAudio" accept="image/png"><br><br>
+    <label>File Audio (≤ 100 MB):</label><br>
+    <input type="file" id="audioFile" accept="audio/*"><br><br>
+    <button onclick="makePolyglot('pngAudio','audioFile','audio')">Buat Polyglot</button>
+    <a id="downloadAudio" style="display:none;" download="polyglot.png">Download Hasil</a>
+    <div id="progressBoxAudio" style="display:none; margin-top:10px;">
+      <div class="progress"><div class="bar" id="progressBarAudio"></div></div>
+      <p id="progressTextAudio">Progress: 0%</p>
+    </div>
+    <div id="messageAudio" style="display:none;"></div>
+    <button id="backToTopAudio" onclick="scrollToTop()">⬆ Kembali ke Atas</button>
   </div>
 
   <h2>Daftar File</h2>
@@ -62,14 +94,25 @@
     });
   }
 
-  async function makePolyglot() {
-    const pngFile = document.getElementById('pngFile').files[0];
-    const mp4File = document.getElementById('mp4File').files[0];
-    const msgBox = document.getElementById('message');
-    const link = document.getElementById('downloadLink');
-    const progressBox = document.getElementById('progressBox');
-    const bar = document.getElementById('progressBar');
-    const text = document.getElementById('progressText');
+  async function makePolyglot(pngId, fileId, mode) {
+    const pngFile = document.getElementById(pngId).files[0];
+    const otherFile = document.getElementById(fileId).files[0];
+
+    const msgBox = document.getElementById(
+      mode === 'video' ? 'messageVideo' : mode === 'doc' ? 'messageDoc' : 'messageAudio'
+    );
+    const link = document.getElementById(
+      mode === 'video' ? 'downloadVideo' : mode === 'doc' ? 'downloadDoc' : 'downloadAudio'
+    );
+    const progressBox = document.getElementById(
+      mode === 'video' ? 'progressBoxVideo' : mode === 'doc' ? 'progressBoxDoc' : 'progressBoxAudio'
+    );
+    const bar = document.getElementById(
+      mode === 'video' ? 'progressBarVideo' : mode === 'doc' ? 'progressBarDoc' : 'progressBarAudio'
+    );
+    const text = document.getElementById(
+      mode === 'video' ? 'progressTextVideo' : mode === 'doc' ? 'progressTextDoc' : 'progressTextAudio'
+    );
 
     msgBox.style.display = 'none';
     link.style.display = 'none';
@@ -77,8 +120,8 @@
     bar.style.width = '0%';
     text.innerText = 'Progress: 0%';
 
-    if (!pngFile || !mp4File) {
-      msgBox.innerText = 'Pilih PNG dan MP4 dulu.';
+    if (!pngFile || !otherFile) {
+      msgBox.innerText = 'Pilih PNG dan file kedua dulu.';
       msgBox.style.display = 'block';
       return;
     }
@@ -87,8 +130,8 @@
       msgBox.style.display = 'block';
       return;
     }
-    if (mp4File.size > MAX_SIZE) {
-      msgBox.innerText = 'Ukuran MP4 melebihi 100 MB.';
+    if (otherFile.size > MAX_SIZE) {
+      msgBox.innerText = 'Ukuran file kedua melebihi 100 MB.';
       msgBox.style.display = 'block';
       return;
     }
@@ -98,7 +141,7 @@
         bar.style.width = (p*0.3) + '%';
         text.innerText = `Progress: ${Math.round(p*0.3)}%`;
       });
-      const mp4Buf = await readFile(mp4File, p=>{
+      const otherBuf = await readFile(otherFile, p=>{
         bar.style.width = (30+p*0.7) + '%';
         text.innerText = `Progress: ${Math.round(30+p*0.7)}%`;
       });
@@ -114,14 +157,15 @@
       }
       if (cut===-1) throw new Error('PNG tidak valid (IEND tidak ditemukan)');
 
-      const out = new Uint8Array(cut + mp4Buf.length);
+      const out = new Uint8Array(cut + otherBuf.length);
       out.set(pngBuf.slice(0, cut), 0);
-      out.set(mp4Buf, cut);
+      out.set(otherBuf, cut);
 
       const blob = new Blob([out], {type:'image/png'});
       link.href = URL.createObjectURL(blob);
       link.style.display = 'inline-block';
-      msgBox.innerText = 'Polyglot berhasil dibuat. Download hasil lalu:\\n- Buka langsung → tampil sebagai gambar\\n- Rename jadi .mp4 → diputar sebagai video';
+      msgBox.innerText =
+        'Polyglot berhasil dibuat. Download hasil lalu:\n- Buka langsung → tampil sebagai gambar\n- Rename jadi ekstensi asli ('+ otherFile.name.split('.').pop() +') → dibuka sebagai file';
       msgBox.style.display = 'block';
       bar.style.width = '100%';
       text.innerText = 'Progress: 100%';
@@ -137,4 +181,3 @@
 </script>
 </body>
 </html>
-
