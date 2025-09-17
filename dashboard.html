@@ -24,7 +24,7 @@
     <label>Video MP4 (≤ 100 MB):</label><br>
     <input type="file" id="mp4File" accept="video/mp4"><br><br>
     <button onclick="makePolyglot('pngVideo','mp4File','video')">Buat Polyglot</button>
-    <a id="downloadVideo" style="display:none;" download="polyglot.png">Download Hasil</a>
+    <a id="downloadVideo" style="display:none;">Download Hasil</a>
     <div id="progressBoxVideo" style="display:none; margin-top:10px;">
       <div class="progress"><div class="bar" id="progressBarVideo"></div></div>
       <p id="progressTextVideo">Progress: 0%</p>
@@ -41,7 +41,7 @@
     <label>File Dokumen (≤ 100 MB):</label><br>
     <input type="file" id="docFile" accept="*/*"><br><br>
     <button onclick="makePolyglot('pngDoc','docFile','doc')">Buat Polyglot</button>
-    <a id="downloadDoc" style="display:none;" download="polyglot.png">Download Hasil</a>
+    <a id="downloadDoc" style="display:none;">Download Hasil</a>
     <div id="progressBoxDoc" style="display:none; margin-top:10px;">
       <div class="progress"><div class="bar" id="progressBarDoc"></div></div>
       <p id="progressTextDoc">Progress: 0%</p>
@@ -58,7 +58,7 @@
     <label>File Audio (≤ 100 MB):</label><br>
     <input type="file" id="audioFile" accept="audio/*"><br><br>
     <button onclick="makePolyglot('pngAudio','audioFile','audio')">Buat Polyglot</button>
-    <a id="downloadAudio" style="display:none;" download="polyglot.png">Download Hasil</a>
+    <a id="downloadAudio" style="display:none;">Download Hasil</a>
     <div id="progressBoxAudio" style="display:none; margin-top:10px;">
       <div class="progress"><div class="bar" id="progressBarAudio"></div></div>
       <p id="progressTextAudio">Progress: 0%</p>
@@ -166,6 +166,15 @@
 
       const blob = new Blob([out], {type:'image/png'});
       link.href = URL.createObjectURL(blob);
+
+      // hasil ikut nama cover + suffix sesuai mode
+      const baseName = pngFile.name.replace(/\.[^/.]+$/, "");
+      let suffix = "_plgx"; // default untuk dokumen
+      if (mode === "video") suffix = "_plg4";
+      else if (mode === "audio") suffix = "_plg3";
+
+      link.download = baseName + suffix + ".png";
+
       link.style.display = 'inline-block';
       msgBox.innerText =
         'Polyglot berhasil dibuat. Download hasil lalu:\n- Buka langsung → tampil sebagai gambar\n- Rename jadi ekstensi asli ('+ otherFile.name.split('.').pop() +') → dibuka sebagai file';
