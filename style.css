@@ -101,3 +101,37 @@ ul li button.rename {
 #backToTopBtn:hover {
   opacity: 0.9;
 }
+
+/* Progress Bar (Video, Dokumen & Audio) */
+#progressBoxVideo, #progressBoxDoc, #progressBoxAudio {
+  margin-top: 10px;
+}
+.progress {
+  background: #eee;
+  border-radius: 5px;
+  overflow: hidden;
+  height: 20px;
+}
+.bar {
+  background: #4f46e5;
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s;
+}
+#messageVideo, #messageDoc, #messageAudio {
+  margin-top: 10px;
+  padding: 8px;
+  background: #f9fafb;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+/* Tombol kembali ke atas */
+#backToTopVideo, #backToTopDoc, #backToTopAudio {
+  background: #007bff;
+  margin-top: 15px;
+  width: 100%;
+}
+#backToTopVideo:hover, #backToTopDoc:hover, #backToTopAudio:hover {
+  opacity: 0.9;
+}
