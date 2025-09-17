@@ -1,28 +1,140 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LunaProjectX - Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LunaProjectX - Dashboard</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Dashboard</h1>
-    <p>Selamat datang, <span id="user-nickname"></span>!</p>
-    <button onclick="logout()">Keluar</button>
+<div class="container">
+  <h1>Dashboard</h1>
+  <p>Welcome, <span id="user-nickname"></span>!</p>
+  <button onclick="logout()">Logout</button>
 
-    <h2>Menu</h2>
-    <ul>
-      <li><a href="uploads.html">📂 Kelola File</a></li>
-      <li><a href="index.html">🔑 Ganti Akun</a></li>
-    </ul>
+  <h2>Upload File</h2>
+  <input type="file" id="file-input">
+  <button onclick="uploadFile()">Upload</button>
+
+  <!-- Polyglot Maker Section -->
+  <h2>Polyglot Maker (PNG + MP4)</h2>
+  <div>
+    <label>Cover PNG (≤ 100 MB):</label><br>
+    <input type="file" id="pngFile" accept="image/png"><br><br>
+    <label>Video MP4 (≤ 100 MB):</label><br>
+    <input type="file" id="mp4File" accept="video/mp4"><br><br>
+    <button onclick="makePolyglot()">Buat Polyglot</button>
+    <a id="downloadLink" style="display:none;" download="polyglot.png">Download Hasil</a>
+    <div id="progressBox" style="display:none; margin-top:10px;">
+      <div class="progress"><div class="bar" id="progressBar"></div></div>
+      <p id="progressText">Progress: 0%</p>
+    </div>
+    <div id="message" style="display:none;"></div>
+
+    <!-- Tombol kembali ke atas -->
+    <button id="backToTopBtn" onclick="scrollToTop()">⬆ Kembali ke Atas</button>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js"></script>
-  <script>
-    document.getElementById("user-nickname").textContent = localStorage.getItem("nickname");
-  </script>
+  <h2>Daftar File</h2>
+  <ul id="file-list"></ul>
+
+  <p><a href="uploads.html">Go to Uploads</a></p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+<script>
+  document.getElementById("user-nickname").textContent = localStorage.getItem("nickname");
+
+  const MAX_SIZE = 100 * 1024 * 1024;
+
+  function readFile(file, onProgress) {
+    return new Promise((res, rej) => {
+      const fr = new FileReader();
+      fr.onload = e => res(new Uint8Array(e.target.result));
+      fr.onerror = e => rej(e);
+      if (onProgress) {
+        fr.onprogress = e => {
+          if (e.lengthComputable) onProgress((e.loaded / e.total) * 100);
+        };
+      }
+      fr.readAsArrayBuffer(file);
+    });
+  }
+
+  async function makePolyglot() {
+    const pngFile = document.getElementById('pngFile').files[0];
+    const mp4File = document.getElementById('mp4File').files[0];
+    const msgBox = document.getElementById('message');
+    const link = document.getElementById('downloadLink');
+    const progressBox = document.getElementById('progressBox');
+    const bar = document.getElementById('progressBar');
+    const text = document.getElementById('progressText');
+
+    msgBox.style.display = 'none';
+    link.style.display = 'none';
+    progressBox.style.display = 'block';
+    bar.style.width = '0%';
+    text.innerText = 'Progress: 0%';
+
+    if (!pngFile || !mp4File) {
+      msgBox.innerText = 'Pilih PNG dan MP4 dulu.';
+      msgBox.style.display = 'block';
+      return;
+    }
+    if (pngFile.size > MAX_SIZE) {
+      msgBox.innerText = 'Ukuran PNG melebihi 100 MB.';
+      msgBox.style.display = 'block';
+      return;
+    }
+    if (mp4File.size > MAX_SIZE) {
+      msgBox.innerText = 'Ukuran MP4 melebihi 100 MB.';
+      msgBox.style.display = 'block';
+      return;
+    }
+
+    try {
+      const pngBuf = await readFile(pngFile, p=>{
+        bar.style.width = (p*0.3) + '%';
+        text.innerText = `Progress: ${Math.round(p*0.3)}%`;
+      });
+      const mp4Buf = await readFile(mp4File, p=>{
+        bar.style.width = (30+p*0.7) + '%';
+        text.innerText = `Progress: ${Math.round(30+p*0.7)}%`;
+      });
+
+      // cari IEND
+      const IEND = new TextEncoder().encode('IEND');
+      let cut=-1;
+      for (let i=pngBuf.length-8; i>=0; i--) {
+        if (pngBuf[i]===IEND[0] && pngBuf[i+1]===IEND[1] && pngBuf[i+2]===IEND[2] && pngBuf[i+3]===IEND[3]) {
+          cut = i+8;
+          break;
+        }
+      }
+      if (cut===-1) throw new Error('PNG tidak valid (IEND tidak ditemukan)');
+
+      const out = new Uint8Array(cut + mp4Buf.length);
+      out.set(pngBuf.slice(0, cut), 0);
+      out.set(mp4Buf, cut);
+
+      const blob = new Blob([out], {type:'image/png'});
+      link.href = URL.createObjectURL(blob);
+      link.style.display = 'inline-block';
+      msgBox.innerText = 'Polyglot berhasil dibuat. Download hasil lalu:\\n- Buka langsung → tampil sebagai gambar\\n- Rename jadi .mp4 → diputar sebagai video';
+      msgBox.style.display = 'block';
+      bar.style.width = '100%';
+      text.innerText = 'Progress: 100%';
+    } catch (err) {
+      msgBox.innerText = 'Error: ' + err.message;
+      msgBox.style.display = 'block';
+    }
+  }
+
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
 </body>
 </html>
+
